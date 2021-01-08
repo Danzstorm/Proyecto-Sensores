@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensores del arduino</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+</head>
+<body>
+ <h1>Sensor Giroscopio del arduino X</h1>
+ <canvas id="myChart" width="400" height="200"></canvas>
+ <script>
+    window.addEventListener('load', acelerómetroX);
+    async function acelerómetroX(){
+        const ctx=document.getElementById('myChart').getContext('2d');
+        const globalTemps = await GetDatax();
+        const myChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: globalTemps.tiempo,
+            datasets: [
+              {
+                label: 'Giroscopio en X',
+                data: globalTemps.x,
+                fill: false,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                borderWidth: 1
+              }
+            ]
+          },
+          options: {
+             layout: {
+              padding: {
+                   left: 50,
+                    right:50,
+                   top: 50,
+                   bottom: 50
+            }
+             },
+             title: {
+                display: true,
+                text: 'Giroscopio X',
+                fontSize:30
+            },
+            legend:{
+                display:false
+            }
+          }
+        });
+    }
+  
+
+    async function GetDatax(){
+     const response= await fetch('SensorGiroscopio2.csv');
+     const data= await response.text();
+     const tiempo=[];
+     const x=[];
+     const rows = data.split('\n').slice(1);
+     rows.forEach(row => {
+        const cols = row.split(',');
+        tiempo.push(cols[0]);
+        x.push(parseFloat(cols[1]));
+        
+      });
+      return {tiempo,x};
+    }
+  
+ </script>
+</body>
+</html>
